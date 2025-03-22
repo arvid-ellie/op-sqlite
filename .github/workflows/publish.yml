@@ -38,10 +38,14 @@ jobs:
           TAG_NAME=${GITHUB_REF#refs/tags/}
           jq --arg version "$TAG_NAME" '.version = $version' package.json > tmp.$$.json && mv tmp.$$.json package.json
 
+      # Change the name to @arvid-ellie/op-sqlite and publish config to github packages for the fork
+      - name: Modify package.json name
+        run: |
+          jq '.name = "@arvid-ellie/op-sqlite"' package.json > tmp.$$.json && mv tmp.$$.json package.json
+
       - uses: JS-DevTools/npm-publish@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          registry: 'https://npm.pkg.github.com'
+          token: ${{ secrets.NPM_TOKEN }}
       - name: Create Release
         uses: actions/create-release@v1
         env:
